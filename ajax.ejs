@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="javascripts/ajax.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.js"></script>
+	<script type="text/javascript" src="javascripts/ajax.js"></script>
+	<script type="text/javascript" src="javascripts/ajaxAction.js"></script>
+  </head>
+  <body>
+  <script type="text/javascript">//
+    ajax({method:'POST',//POST
+    type:'JSON',//JSON
+    url:'http://localhost:3000/ajax',
+    params:{name:'yzh', age:'23'},//[{name:'yhj', age:'22'},{name:'yzh', age:'23'}]
+    }, {
+    before:function() {
+      //alert('before');
+      return true;
+    },
+    success:function(result) {
+      //alert(result);
+    },
+    }).send();
+    //
+   // ajaxAction({url:'http://localhost:3000/', method:'POST'}, {name:'yzh', age:'23'}, {});
+  </script>
+  </body>
+</html>

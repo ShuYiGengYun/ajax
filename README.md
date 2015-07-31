@@ -15,3 +15,18 @@ Ajax的封装
       //alert(result);
     },
     }).send();
+
+EventEmitter
+浏览器端模拟EventEmitter的实现，拓展了部分功能，添加了定制实践促发的次数的功能，
+使用方式和其他的EventEmiiter类似。
+
+使用方法
+var emit = new EventEmitter();
+		
+		emit.on('click', function() {
+		  console.log('clcik');
+		}, 2);
+		emit.trigger('click');
+		emit.trigger('click');
+		emit.trigger('click');
+ 

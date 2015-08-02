@@ -44,16 +44,23 @@
 	};
 	/*addListener 和on 同义 */
 	EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-	/*移除事件*/
+	/*移除事件的所有监听函数*/
 	EventEmitter.prototype.off = function(evt) {
 		var events = this.getEvents();
 		events[evt] = [];
 	};
-	EventEmitter.prototype.removeListener = EventEmitter.prototype.off;
+	EventEmitter.prototype.removeEvent = EventEmitter.prototype.off;
 	
-	EventEmitter.prototype.removeEvent = function(evt) {
-		var events = this.getEvents();
-		events[evt] = null;
+	/**
+	  会删除同一事件中的所有listener
+	**/
+	EventEmitter.prototype.removeListener = function(evt, listener) {
+		var listeners = this.getListeners(evt);
+		for(var i=0; i<listeners.length; i++) {
+			if(listeners[i].listener == listener) {
+				delete listeners[i];
+			}
+		}
 	};
 	/**
 	  触发事件
@@ -79,21 +86,20 @@
         var args = Array.prototype.slice.call(arguments, 1);
         return this.trigger(evt, args);
     };
-	/*
+	
 	EventEmitter.inherit = function(target) {
+		
 		if(typeof(target.prototype) == 'undefined') {
-			target.prototype = EventEmitter.prototype;
-			return target;
+			throw 'target:' + target + 'must have prototype';
 		}
 		var souPto = EventEmitter.prototype;
 		var tarPto = target.prototype;
-		alert(tarPto);
 		for(var key in souPto) {
 			tarPto[key] = souPto[key];
 		}
 		return target;
 	};
-	*/
+	
 	window.EventEmitter = EventEmitter;
 	
 })(window);

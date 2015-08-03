@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+	<script type="text/javascript" src="/javascripts/upload.js"></script>
+  </head>
+  <body>
+   <form id="upload">
+         <p >指定文件名： <input type="text" name="filename" value= "weber"/></p >
+    <input type="file" name="file" multiple/>
+    <input type="button" id="submit" value="upload">
+</form>
+  </body>
+  <script type="text/javascript">
+     document.getElementById('submit').onclick = function() {
+	    var upload = new Upload('upload', {method:'post', url:'/upload'});
+		upload.send();
+	 };
+  </script>
+</html>

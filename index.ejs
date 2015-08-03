@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+	<script type="text/javascript" src="/javascripts/ajaxform.js"></script>
+  </head>
+  <body>
+   <form id="form">
+  <div><input type="text" name="a" value="1" id="a" /></div>
+  <div><input type="password" name="b" value="2" id="b" /></div>
+  <div><input type="hidden" name="c" value="3" id="c" /></div>
+  <div>
+    <textarea name="d" rows="8" cols="40">4</textarea>
+  </div>
+  <div><select name="e" multiple="multiple">
+    <option value="5" selected="selected">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+  </select></div>
+  <div>
+    <input type="checkbox" name="f" value="8" id="f" />
+  </div>
+   <div>
+    <input type="checkbox" name="f" value="9" id="f1" />
+  </div>
+   <div>
+    <input type="radio" name="g" value="10" id="f" />
+  </div>
+  <div>
+    <input type="button" id="submit" name="h" value="Submit" id="h" />
+  </div>
+</form>
+  </body>
+  <script type="text/javascript">
+     document.getElementById('submit').onclick = function() {
+	 var test = new form('#form input,textarea,select', '/form', 'post');
+	 test.submit();
+	 };
+  </script>
+</html>

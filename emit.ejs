@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+	<script type="text/javascript" src="/javascripts/eventemitter.js"></script>
+  </head>
+  <body>
+    <input type="button" id="submit" value="click">
+  </body>
+  <script type="text/javascript">
+     document.getElementById('submit').onclick = function() {
+	 /*
+	    var emit = new EventEmitter();
+		
+		emit.on('click', function() {
+		  console.log('clcik');
+		}, 2);
+		emit.trigger('click');
+		emit.trigger('click');
+		emit.trigger('click');
+	 */
+	 var Target = function(){};
+	 EventEmitter.inherit(Target);
+	 var test = new Target();
+	  test.on('click', function() {
+		  console.log('clcik');
+		}, 2);
+		 test.trigger('click');
+		 test.trigger('click');
+
+	 };
+  </script>
+</html>

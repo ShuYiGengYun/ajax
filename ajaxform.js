@@ -1,10 +1,19 @@
+/**
+  function:ajax提交表单
+  version:v1.0
+  author:weber yang
+  date:2015.8.8
+**/
 ;(function(window, undefined) {
 	
 	function form(request, selector) {
 		
 		return new Form(request, selector);
 	}
-	//request{url:, method:enctype:}
+	/*
+	  request{url:请求路径, method:请求方法(GET默认,POST...), enctype:表单提交的类型,默认为application/x-www-form-urlencoded}
+	  selector:样式选择器,可以手动过滤表单中需要提交的元素,例如'#form input,select,textarea'仅提交input和select和textarea的元素
+	*/
 	var Form = function(request, selector) {
 		
 		this.selector = selector;
@@ -19,6 +28,7 @@
 		req.requestType = req.enctype ? req.enctype : 'application/x-www-form-urlencoded';
 		this.request = req;
 		
+		//初始化表单控件存储,解析表单的时候会把input这样的控件放到这里
 		this.inputs = {
 			radios: new Array(),
 			checkboxs: new Array(),
@@ -29,6 +39,7 @@
 		this.textareas = new Array();
 	};
 	
+	//解析表单
 	Form.prototype.parseForm = function() {
 
 		var elements = document.querySelectorAll(this.selector);
@@ -110,6 +121,7 @@
 		textareas.push(textarea);
 	};
 	
+	//序列化前面解析出来的表单元素
 	Form.prototype.serialize = function(requestType) {
 		
 		var result = {};
@@ -159,7 +171,7 @@
 		
 		return result;
 	};
-	
+	//发送请求,这里使用自己封装的ajax,详见本博客的ajax文章.
 	Form.prototype.send = function() {
 		
 		var params = this.serialize(this.request.requestType);
@@ -178,7 +190,7 @@
        }).send();
 	   
 	};
-	
+	//手动提交表单
 	Form.prototype.submit = function() {
 		
 		this.parseForm();

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+	<script type="text/javascript" src="/javascripts/ajax.js"></script>
+	<script type="text/javascript" src="/javascripts/ajaxform.js"></script>
+  </head>
+  <body>
+  <!--
+  <div><input type="password" name="password" value="2"/></div>
+  <div><input type="hidden" name="hidden" value="3"/></div>
+  <input type="number" name="number" step="3">
+   <div><input type="file" name="file"/></div>
+  <div><input type="checkbox" name="checkbox2" value="18" /></div>
+  <div><input type="checkbox" name="checkbox2" value="19"/></div>
+  -->
+   <form id="form">
+   <!-- -->
+     <div><input type="text" name="text" value="1" /></div>
+     <div><input type="checkbox" name="checkbox" value="8" /></div>
+     <div><input type="checkbox" name="checkbox" value="9"/></div>
+     <div><input type="radio" name="radio" value="10"/></div>
+	 <div><input type="radio" name="radio" value="11"/></div>
+	
+	 <!---->
+	 <!---->
+	 <div>
+	   <select name="select" >
+         <option value="1" selected="selected">1</option>
+         <option value="2">2</option>
+         <option value="3">3</option>
+       </select>
+	 </div>
+	 <div>
+	   <select name="mselect" multiple="multiple">
+         <option value="5" selected="selected">5</option>
+         <option value="6">6</option>
+         <option value="7">7</option>
+       </select>
+	 </div>
+	 
+	 <!--- -->
+	 <div>
+       <textarea name="textarea" rows="8" cols="40">4</textarea>
+     </div>
+	
+	 
+	 <div><input type="button" id="submit" name="submit" value="Submit"/></div>
+  </form>
+  </body>
+  <script type="text/javascript">//,select,textarea,
+     document.getElementById('submit').onclick = function() {
+	 var test = new form({url:'/ajaxform', method:'post', enctype:'multipart/form-data'}, '#form input,select,textarea');
+	 test.submit();
+	 };
+	 
+  </script>
+</html>

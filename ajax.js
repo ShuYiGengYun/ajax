@@ -7,7 +7,7 @@
   Ajax的返回结果异常没有处理提
 */
 
-(function(window, undefined) {
+;(function(window, undefined) {
 
 	function ajax(request, cbObject){
 		 return new Ajax(request, cbObject);
@@ -67,7 +67,7 @@
 			request.url = request.url + '?' + toQueryString(request.params);
 			request.params = null;
 		}
-		else if(request.method.toUpperCase() == 'POST') {
+		else if(request.method.toUpperCase() == 'POST' && !request.params instanceof Blob) {
 			request.params = toQueryString(request.params);
 		}
 		xhr.open(request.method, request.url);
@@ -75,6 +75,7 @@
 		this.setHeader('Content-type', request.requestType);
 		
 		this.writeHeader();//把请求太写入xhr
+		console.log(request.params.get('radio'))
 		xhr.send(request.params);
 		
 		var responseType = request.responseType;

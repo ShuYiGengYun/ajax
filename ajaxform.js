@@ -1,75 +1,190 @@
-(function(window, undefined) {
+;(function(window, undefined) {
 	
-	
-	function form(selector, url, method) {
+	function form(request, selector) {
 		
-		return new Form(selector, url, method);
+		return new Form(request, selector);
 	}
-	
-	var Form = function(selector, url, method) {
-		this.form = document.querySelector(selector);
+	//request{url:, method:enctype:}
+	var Form = function(request, selector) {
 		
-		this.method = method;
-		this.url = url;
-		this.params = {};
-		this.elements = {
-			input:[],
-			select:[],
-			textarea:[],
+		this.selector = selector;
+		this.init(request);
+		
+		return this;
+	};
+	
+	Form.prototype.init = function(req) {
+		
+		req.method = req.method ? req.method:'get';
+		req.requestType = req.enctype ? req.enctype : 'application/x-www-form-urlencoded';
+		this.request = req;
+		
+		this.inputs = {
+			radios: new Array(),
+			checkboxs: new Array(),
+			files: new Array(),
+			others: new Array(),
 		};
-	};
-	Form.ContrTypes = {
-		//1.input
-		button:0, checkbox:1, color:2, date:3, datetime:4, 'datetime-local':5,
-		email:6, file:7, hidden:8, image:9, month:10, number:11,
-		password:12, radio:13, range:14, reset:15, search:16,
-		submit:17, tel:18, text:19, time:20, url:21, week:22,
-		//2.select
-		'select-one'30:,'select-multiple'31:,
-		//3.textarea
-		textarea:40,
-	};
-	Form.ContrFilter = {
-		//1.button
-		'button':0, 'reset':1, 'submit':2,
+		this.selects = new Array();
+		this.textareas = new Array();
 	};
 	
-	Form.prototype.init = function() {
-		
-	};
-	
-	Form.prototype.addParam = function(key, value) {
-		this.params[key] = value;
-		return this;
-	};
-	Form.prototype.addParams = function(pObj) {
-		for(var key in pObj) {
-			this.params[key] = pObj[key];
-		}
-		return this;
-	};
-	
-	Form.prototype.parseForm() {
-		var elements = this.elements;
-		var rowEles = document.querySelectorAll(this.selector);
-		for(var i=0; i<rowEles.length; i++) {
-			var ele = rowEles[i];
-			if((typeof(ContrTypes[ele.type]) != 'undefined') && (typeof(ContrFilter[ele.type]) == 'undefined')) {
-				switch() {
-					case 'input':
-					break;
-					case 'select':
-					break;
-					case 'textarea':
-					break;
-					default:break;
-				}
+	Form.prototype.parseForm = function() {
+
+		var elements = document.querySelectorAll(this.selector);
+		for(var i=0; i<elements.length; i++) {
+			var ele = elements[i];
+			switch(ele.nodeName) {
+				case 'INPUT':
+				  this._handleInput(ele);
+				break;
+				case 'SELECT':
+				  this._handleSelect(ele);
+				break;
+				case 'TEXTAREA':
+				  this._handleTextarea(ele);
+				break;
+				default:break;
 			}
 		}
 	}
 	
+	Form.prototype._handleInput = function(input) {
+		
+		if(input.type == 'reset' || input.type == 'submit' || input.type == 'button') {
+			return ;
+		}
+		var inputs = this.inputs;
+		switch(input.type) {
+			case 'radio':
+			   if(input.checked) {
+				   inputs.radios.push(input);
+			   }
+			break;
+			case 'checkbox':
+			  if(!input.checked) {
+				  break;
+			  }
+			  var checkboxs = inputs.checkboxs;
+			  var checkbox = null;
+			  for(var i=0; i<checkboxs.length;i++) {
+				  if(checkboxs[i].name == input.name) {
+					  checkbox = checkboxs[i];
+					  break;
+				  }
+			  }
+			  if(checkbox != null) {
+				  checkbox.values = checkbox.values + ',' + input.value;
+			  }
+			  else {
+				  input.values = input.value;
+                  inputs.checkboxs.push(input);				  
+			  }
+			break;
+			case 'file':
+			   inputs.files.push(input);
+			break;
+			default:
+			  inputs.others.push(input);
+			break;
+		}
+	};
+	
+	Form.prototype._handleSelect = function(select) {
+		var selects = this.selects;
+		if(select.multiple) {
+			var options = select.options;
+			var values = '';
+			for(var i=0; i<options.length; i++) {
+				if(options[i].selected) {
+					values = values + ',' + options[i].value;
+				}
+			}
+			select.values = values;
+		}
+		selects.push(select);
+	};
+	
+	Form.prototype._handleTextarea = function(textarea) {
+		var textareas = this.textareas;
+		textareas.push(textarea);
+	};
+	
+	Form.prototype.serialize = function(requestType) {
+		
+		var result = {};
+		var i = 0;
+		
+		//1.input
+		var radios = this.inputs.radios;
+		for(i=0; i<radios.length; i++) {
+			result[radios[i].name] = radios[i].value;
+		}
+		var checkboxs = this.inputs.checkboxs;
+		for(i=0; i<checkboxs.length; i++) {
+			result[checkboxs[i].name] = checkboxs[i].values;
+		}
+		var others = this.inputs.others;
+		for(i=0; i<others.length; i++) {
+			result[others[i].name] = others[i].value;
+		}
+		//2.select
+		var selects = this.selects;
+		for(i=0; i<selects.length; i++) {
+			if(!selects[i].multiple) {
+				result[selects[i].name] = selects[i].value;
+			}
+			else {
+				result[selects[i].name] = selects[i].values;
+			}
+		}
+		//3.textarea
+		var textareas = this.textareas;
+		for(i=0; i<textareas.length; i++) {
+			result[textareas[i].name] = textareas[i].value;
+		}
+		
+		if(this.inputs.files.length != 0 || requestType == 'multipart/form-data') {
+			
+			var fd = new FormData();
+			var files = this.inputs.files;
+			for(i=0; i<files.length; i++) {
+				fd.append(files[i]);
+			}
+			for(var key in result) {
+				fd.append(key, result[key]);
+			}
+			result = fd;
+		}
+		
+		return result;
+	};
+	
+	Form.prototype.send = function() {
+		
+		var params = this.serialize(this.request.requestType);
+		if(params instanceof Blob) {
+			this.request.requestType = 'multipart/form-data';
+		}
+		this.request.params = params;
+		console.log(params);
+		
+		ajax(
+			this.request,
+			{
+			success:function(result) {
+			alert(result)
+		},
+       }).send();
+	   
+	};
+	
 	Form.prototype.submit = function() {
+		
+		this.parseForm();
+		this.send();
 	};
 	
 	window.form = form;
+
 })(window);
